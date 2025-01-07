@@ -1,4 +1,5 @@
 const express=require('express');
+const userModel = require('../models/userModel');
 const router =express.Router();
 
 router.get('/test',(req,res)=>{
@@ -9,9 +10,41 @@ router.get('/test',(req,res)=>{
         res.render('register');
     })
 
-    router.post('/register',(req,res)=>{
+    router.post('/register',async (req,res)=>{
         console.log(req.body);
-        res.send("form submitted ");
+        const{firstname,email,password}=req.body;
+        const user=await userModel.create({
+            firstname,
+            email,
+            password
+        });
+        res.send(user);
+    })
+    //read
+    router.get('/read',(req,res)=>{
+        userModel.find().then((users)=>{
+            res.send(users);
+            })
+    })
+    
+
+    //update 
+    router.get('/update',(req,res)=>{
+        userModel.findOneAndUpdate(
+            {email:'simrandhiman404@gmail.com'},
+            {firstname:'karanAujla'},
+            {new:true}
+        )
+        .then((users)=>{
+            res.send(users);
+            })
+    })
+
+    //delete
+    router.get('/delete',(req,res)=>{
+        userModel.findOneAndDelete({email:'simrandhiman404@gmail.com'}).then((users)=>{
+            res.send(users);
+            })
     })
 
 
